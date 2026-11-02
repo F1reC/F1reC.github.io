@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>韩熔 · 简历</title>
+<meta name="description" content="韩熔，AI 产品经理。现任 Soloop 联合创始人 & CPO；此前在百度负责秒哒海外版 MeDo 的产品与商业化。">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- 字体异步加载：国内访问不到 Google Fonts 时直接用系统宋体，不阻塞页面 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&amp;family=Noto+Sans+SC:wght@400;500&amp;display=swap" media="print" onload="this.media='all'">
+<style>
+  /* 版式与简历“编辑排版”方案一致：A4 纸面 794 × 1123，左列日期，右列内容 */
+  :root {
+    --paper: #FBF9F4;
+    --desk: #E9E5DC;
+    --ink: #1A1A1A;
+    --body: #2E2A26;
+    --muted: #5A554E;
+    --rule: #D9D3C7;
+    --accent: #A3361F;
+    --serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+    --sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--desk); color: var(--ink); font-family: var(--serif); }
+  a { color: var(--ink); text-decoration: none; border-bottom: 1px solid #C9C1B4; }
+  a:hover { color: var(--accent); border-color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .meta { font-family: var(--sans); font-size: 12px; line-height: 1.6; color: var(--muted); letter-spacing: .02em; }
+
+  .bar { width: 794px; margin: 0 auto; padding: 28px 0 18px; display: flex; justify-content: space-between; }
+  .bar a { border: 0; color: var(--muted); }
+  .bar a:hover { color: var(--accent); }
+
+  .sheet { width: 794px; min-height: 1123px; margin: 0 auto 32px; padding: 54px 60px 44px; background: var(--paper); display: flex; flex-direction: column; box-shadow: 0 1px 3px rgba(40, 30, 20, .06), 0 12px 32px rgba(40, 30, 20, .08); }
+  .sheet.p2 { padding-top: 44px; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  header h1 { margin: 0; font-size: 46px; line-height: 1.1; font-weight: 900; letter-spacing: .1em; }
+  header .lead { margin: 14px 0 0; font-size: 18px; line-height: 1.5; font-weight: 600; }
+  header .sub { margin: 6px 0 0; font-size: 13.5px; line-height: 1.6; color: #3A3632; }
+  header .meta { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  header .meta a { color: var(--muted); }
+  header img { width: 86px; height: 103px; object-fit: cover; border-radius: 2px; display: block; flex-shrink: 0; }
+  .thick { margin-top: 22px; height: 1.5px; background: var(--ink); }
+  .thin { margin-top: 22px; height: 1px; background: var(--rule); }
+
+  .running { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+
+  section { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+  section.first { margin-top: 24px; gap: 18px; }
+  .p2 section.first { margin-top: 28px; gap: 16px; }
+  .row { display: grid; grid-template-columns: 104px minmax(0, 1fr); column-gap: 20px; }
+  .head { align-items: baseline; }
+  .head .num { font-weight: 500; letter-spacing: .2em; color: var(--accent); }
+  .head h2 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: .16em; }
+  .when { display: flex; flex-direction: column; padding-top: 3px; }
+  .body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .title { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
+  .title h3 { margin: 0; font-size: 15.5px; font-weight: 700; }
+  .p2 .title h3 { font-size: 15px; }
+  .title .role { font-size: 13.5px; font-weight: 600; color: var(--accent); }
+  .sub-title { margin-top: 8px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+  .sub-title h4 { margin: 0; font-size: 14px; font-weight: 700; }
+  p.txt { margin: 0; font-size: 13px; line-height: 1.68; color: var(--body); }
+  h3.small { margin: 0; font-size: 14.5px; font-weight: 700; }
+
+  .eb { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .eb li { position: relative; padding-left: 16px; font-size: 13px; line-height: 1.68; color: var(--body); }
+  .eb li::before { content: ""; position: absolute; left: 0; top: 11px; width: 8px; height: 1px; background: #8C857B; }
+  .eb b { font-weight: 700; color: var(--ink); }
+
+  @media (max-width: 860px) {
+    body { background: var(--paper); }
+    .bar { width: auto; padding: 20px 16px 4px; }
+    .sheet { width: auto; min-height: 0; margin: 0; padding: 20px 16px 32px; box-shadow: none; }
+    .sheet.p2 { padding-top: 8px; }
+    .running { display: none; }
+    header h1 { font-size: 40px; }
+    header .lead { font-size: 17px; }
+    header img { width: 72px; height: 86px; }
+    .row { grid-template-columns: 1fr; }
+    .head { display: flex; gap: 10px; }
+    .when { flex-direction: row; gap: 10px; padding: 0 0 2px; }
+  }
+  @media print {
+    @page { size: A4; margin: 0; }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: var(--paper); }
+    .bar { display: none; }
+    .sheet { width: 210mm; min-height: 297mm; margin: 0; box-shadow: none; break-after: page; }
+    .sheet:last-child { break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="bar meta" aria-label="页面导航">
+  <a href="./">← 回到湖边</a>
+  <span>韩熔 · 简历</span>
+</nav>
+
+<main>
+  <article class="sheet p1">
+    <header>
+      <div>
+        <h1>韩熔</h1>
+        <p class="lead">能用 Coding Agent 自己写出可上线代码的产品经理。</p>
+        <p class="sub">现任 Soloop 联合创始人 &amp; CPO；此前在百度负责秒哒海外版的产品与商业化。</p>
+        <div class="meta">
+          <a href="mailto:1489472989@qq.com">1489472989@qq.com</a>
+          <a href="https://www.xiaohongshu.com/user/profile/6534e9b5000000000400a689" target="_blank" rel="noopener">小红书 3688664175</a>
+        </div>
+      </div>
+      <img src="img/photo.png" alt="韩熔的照片" width="220" height="264">
+    </header>
+    <div class="thick"></div>
+
+    <section class="first">
+      <div class="row head">
+        <span class="meta num">01</span>
+        <h2>工作经历</h2>
+      </div>
+
+      <div class="row">
+        <div class="meta when"><span>2026.08 – 至今</span><span>北京</span></div>
+        <div class="body">
+          <div class="title">
+            <h3>小小寰宇 · <a href="https://www.soloop.io" target="_blank" rel="noopener">Soloop</a></h3>
+            <span class="role">联合创始人 &amp; CPO</span>
+          </div>
+          <ul class="eb" style="margin-top: 6px">
+            <li>Soloop 是给独立创始人用的 AI 产品，帮他们做市场调研、建站和社媒推广。我负责产品设计，并用 Claude Code 写核心代码。</li>
+            <li><b>设计与开发：</b>负责整个产品的页面结构、UI 和交互设计；亲手写了新用户引导、首次使用流程和付费体系，累计 190+ 个 commit。</li>
+            <li><b>用数据定优先级：</b>搭了运营后台和注册漏斗。发现 41 名流失用户中近一半从没拿到第一批任务，于是暂停新功能，先修好“首次使用 → 生成任务 → 执行”这条主流程。</li>
+            <li><b>需求文档：</b>每份 PRD 都附一个可点击的 Demo，覆盖所有页面状态和文案；涉及 AI 生成效果的需求，附上提示词和评测样例。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="meta when"><span>2025.06 – 2026.08</span><span>北京</span></div>
+        <div class="body">
+          <div class="title">
+            <h3>百度</h3>
+            <span class="role">总裁管培生（百度智能云，每年 1–2 人）</span>
+          </div>
+          <div class="sub-title">
+            <h4>秒哒海外版（<a href="https://medo.dev" target="_blank" rel="noopener">MeDo</a>）负责人</h4>
+            <span class="meta">2026.04 – 2026.08</span>
+          </div>
+          <p class="txt">负责 vibe coding 产品秒哒海外版的产品规划与商业化，带 10 余人团队。</p>
+          <ul class="eb" style="margin-top: 4px">
+            <li><b>付费：</b>免费积分从每天 100 改为每月最多 500，按连续登录发放；下线 7 天 0 元试用。</li>
+            <li><b>定价：</b>新增 Pro Max 档位和年付（月付 $20 / $50）；上线土耳其、巴西的本币定价。</li>
+            <li><b>原型：</b>用 Coding Agent 写出 Landing Page 和首页的可运行原型，交研发直接接入。</li>
+            <li><b>研发流程：</b>把海外版从共用代码库拆成独立分支，有了自己的发版窗口；按“PM 出原型、研发开发、专人修 Bug”分工，需求 1–2 天交付一个。</li>
+          </ul>
+          <div class="sub-title">
+            <h4>管培实习 · 秒哒产品经理</h4>
+            <span class="meta">2025.06 – 2025.10</span>
+          </div>
+          <p class="txt">负责“Agent 全流程白盒化”：把 AI 生成应用的每一步实时展示给用户。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="thin"></div>
+
+    <section>
+      <div class="row head">
+        <span class="meta num">02</span>
+        <h2>实习经历</h2>
+      </div>
+      <div class="row">
+        <div class="meta when"><span>2025.02 – 2025.06</span></div>
+        <div class="body">
+          <h3 class="small">快手 · AI 产品经理</h3>
+          <p class="txt">用 V0 + Cursor 做可交互原型替代静态 PRD，在企业应用部推广。</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="meta when"><span>2023.05 – 2024.03</span></div>
+        <div class="body">
+          <h3 class="small">中国中车 · 算法工程师</h3>
+          <p class="txt">时序预测模型轻量化（ONNX），推理速度提升 15%。</p>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <article class="sheet p2">
+    <div class="running meta"><span>韩熔 · AI 产品经理</span><span>2 / 2</span></div>
+
+    <section class="first">
+      <div class="row head">
+        <span class="meta num">03</span>
+        <h2>早期创业项目</h2>
+      </div>
+      <div class="row">
+        <div class="meta when"><span>2026.01</span><span>深圳</span></div>
+        <div class="body">
+          <div class="title"><h3>抱抱獭</h3><span class="role">产品经理 &amp; 合伙人</span></div>
+          <div class="meta">深圳科创学院入孵项目</div>
+          <p class="txt" style="margin-top: 2px">面向睡眠场景的情绪陪伴硬件，舒缓情绪、辅助入睡。</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="meta when"><span>2024.10 – 2025.02</span></div>
+        <div class="body">
+          <div class="title"><h3>神经火花 · KnowHow</h3><span class="role">产品经理 &amp; CEO</span></div>
+          <p class="txt" style="margin-top: 2px">帮想做个人 IP 的人把碎片化想法变成内容：Agent 自动整理成文章，并分发到社媒引流。</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="meta when"><span>2024.07 – 2024.10</span></div>
+        <div class="body">
+          <div class="title"><h3>赫兹健康 · GlucoInsight</h3><span class="role">产品经理 &amp; 合伙人</span></div>
+          <p class="txt" style="margin-top: 2px">基于 UCL 实验室成果，用 CGM 数据评估血糖类型、推测饮食结构；获奇绩创坛、线性资本、真格基金初步投资意向。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="thin" style="margin-top: 24px"></div>
+
+    <section>
+      <div class="row head">
+        <span class="meta num">04</span>
+        <h2>教育背景</h2>
+      </div>
+      <div class="row">
+        <div class="meta when"><span>2024.07 – 2025.12</span><span>新加坡</span></div>
+        <div class="body">
+          <div class="title"><h3>新加坡国立大学（NUS）</h3><span class="role">软件工程硕士</span></div>
+          <div class="meta">GPA 4.5 / 5.0</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="meta when"><span>2020.09 – 2024.06</span><span>北京</span></div>
+        <div class="body">
+          <div class="title"><h3>北京交通大学</h3><span class="role">软件工程学士</span></div>
+          <div class="meta">GPA 3.8 / 4.0</div>
+          <ul class="eb" style="margin-top: 4px">
+            <li>获保研资格；曾获学习优秀奖学金、社会工作奖学金，获评校优秀学生干部。</li>
+            <li>TCL 科创节全国十强；大创“基于深度学习的司机驾驶监测系统”获国家级奖项；互联网+“PosePerfect 舞姿预测”获北京市级奖项。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="thin" style="margin-top: 24px"></div>
+
+    <section style="gap: 14px">
+      <div class="row head">
+        <span class="meta num">05</span>
+        <h2>活动与荣誉</h2>
+      </div>
+      <div class="row">
+        <span class="meta when">黑客松</span>
+        <p class="txt">百度千人黑客松综合一等奖、最具潜力项目；深客松综合赛道一等奖；AdventureX 2025 飞书赛道一等奖；AdventureX 2024 线性资本一等奖、Moonshot 二等奖、AI Leap Studio 二等奖、AWS 三等奖。</p>
+      </div>
+      <div class="row">
+        <span class="meta when">讲师 / 评委</span>
+        <p class="txt">百度世界大会、百度云智大会特邀讲师；观猹 <a href="https://watcha.cn/study/ai-pm/day/1" target="_blank" rel="noopener">AI 产品经理共学营</a>首讲讲师；AdventureX 2026 项目评委；小红书黑客松巅峰赛特邀嘉宾。</p>
+      </div>
+      <div class="row">
+        <span class="meta when">媒体采访</span>
+        <p class="txt">作为秒哒海外版负责人接受崔牛会专访<a href="https://channels.weixin.qq.com/finder-preview/pages/sph?id=AyGSsHF4ZC" target="_blank" rel="noopener">《AI 时代，以快破局：百度秒哒 MeDo 如何通过亚马逊云科技 Marketplace 全球买、全球卖？》</a>（2026.09）。</p>
+      </div>
+    </section>
+  </article>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,297 @@
+:root {
+  --font-size: 18px;
+  --ink: #ffffffeb;
+  --gentle-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --fade: 0.28s;
+  --fade-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dissolve: 1.2s;
+  --safe-left: max(22px, calc(env(safe-area-inset-left) + 8px));
+  --safe-right: max(22px, calc(env(safe-area-inset-right) + 8px));
+  --pair: 28px;
+  --gap: 12px;
+  --halo: 0 0 0.22em rgb(7 17 19 / 0.18), 0 0 0.6em rgb(7 17 19 / 0.3), 0 0 1.1em rgb(7 17 19 / 0.18);
+}
+@media (max-width: 700px) {
+  :root { --font-size: 16px; --safe-left: max(16px, calc(env(safe-area-inset-left) + 8px)); --safe-right: max(16px, calc(env(safe-area-inset-right) + 8px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --fade: 0.112s; }
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  color: var(--ink);
+  font-family: "Newsreader", Georgia, "Noto Serif SC", "Songti SC", "STSong", serif;
+  font-weight: 350;
+  font-size: var(--font-size);
+  font-optical-sizing: auto;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+body { position: fixed; inset: 0; }
+button, a, output, input { font: inherit; color: inherit; }
+button { border: 0; padding: 0; margin: 0; background: none; cursor: pointer; outline: none; }
+:focus { outline: none; }
+
+/* ---------------------------------------------------------------- loader */
+#traveling { position: fixed; inset: 0; z-index: 30; pointer-events: none; }
+#traveling-word { position: absolute; left: 50%; top: calc(50% - 28px); transform: translateX(-50%); height: 28px; line-height: 28px; font-style: italic; }
+#traveling-dots { position: absolute; left: 100%; top: 0; white-space: nowrap; }
+#traveling-dots::after { content: ""; animation: traveling-dots 2s steps(1, end) infinite; }
+@keyframes traveling-dots { 0%, 100% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "…"; } }
+@media (prefers-reduced-motion: reduce) { #traveling-dots::after { animation: none; content: "…"; } }
+.water-ready #traveling, .webgl-unavailable #traveling { visibility: hidden; }
+
+/* ---------------------------------------------------------------- lake */
+.lake { position: fixed; inset: 0; overflow: hidden; touch-action: none; overscroll-behavior: none; }
+@media (pointer: fine) { .lake { cursor: none; } .lake.is-near-text, .lake.is-context-menu-open { cursor: default; } }
+#water, #fallback-water { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity var(--dissolve) ease-out; }
+#fallback-water { display: none; }
+.water-ready #water { opacity: 1; }
+.webgl-unavailable #water { display: none; }
+.webgl-unavailable #fallback-water { display: block; opacity: 1; }
+.is-arriving .lake > :not(canvas) { opacity: 0 !important; visibility: hidden !important; }
+.arrival-revealing .interface { transition: opacity var(--dissolve) ease-out !important; }
+
+/* ---------------------------------------------------------------- cursor: a patch of light lying on the water */
+.cursor-ring { position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 8; pointer-events: none; opacity: 0; mix-blend-mode: screen; transition: opacity 0.5s ease; }
+.cursor-ring.is-visible, .cursor-ring.is-pressed { opacity: 1; }
+.cursor-ring svg { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; }
+.cursor-ring path {
+  fill: url(#ring-glow);
+  stroke: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(1.5);
+  transition: transform 0.18s var(--gentle-ease);
+}
+.cursor-ring.is-pressed path { transform: scale(1.2); }
+.cursor-ring.is-tap-pulsing path { animation: ring-tap 0.3s var(--gentle-ease); }
+@keyframes ring-tap { 0% { transform: scale(1.2); } 100% { transform: scale(1.5); } }
+.lake.is-context-menu-open .cursor-ring { opacity: 0 !important; }
+
+/* ---------------------------------------------------------------- interface */
+.interface { position: absolute; inset: 0; z-index: 4; pointer-events: none; transition: opacity var(--fade) var(--fade-ease); }
+.lake.is-context-menu-open .interface { opacity: 0; }
+.control { pointer-events: auto; text-shadow: var(--halo); }
+.control, .about-panel, .time-scrubber, .track-waveform { transition: opacity var(--fade) var(--fade-ease); }
+/* 简介像从雾里浮出来：收起时微微模糊；自动弹出时浮现得更慢 */
+.about-panel { transition: opacity 0.7s ease, filter 0.7s ease; }
+.interface:not(.is-about-open) .about-panel { filter: blur(5px); }
+.interface.is-gentle .about-panel { transition-duration: 1.8s; }
+@media (prefers-reduced-motion: reduce) { .about-panel, .interface.is-gentle .about-panel { transition-duration: 0.3s; filter: none; } }
+
+.time-button, .site-title {
+  position: absolute;
+  left: var(--safe-left);
+  top: 50%;
+  height: var(--pair);
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.time-button { transform: translateY(-100%); }
+.site-title { transform: translateY(-2px); }
+.time-numerals { font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.time-meridiem { margin-left: 0.28em; }
+
+/* 歌名：在季节上方，点开看歌曲和电影的介绍；没在播放时淡一些 */
+.track-title {
+  position: absolute;
+  left: var(--safe-left);
+  top: 50%;
+  height: var(--pair);
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-style: italic;
+  transform: translateY(calc(-200% - 4px));
+}
+.interface.is-resting .track-title:not(.is-playing) { opacity: 0.6; }
+
+/* ---------------------------------------------------------------- overlays */
+.about-panel, .time-scrubber, .track-waveform { position: absolute; opacity: 0; pointer-events: none; }
+
+.about-panel {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(22.5em, calc(100vw - 24px));
+  text-align: center;
+  line-height: 1.28;
+  text-wrap: pretty;
+  text-shadow: 0 0 0.25em rgb(7 17 19 / 0.22), 0 0 0.65em rgb(7 17 19 / 0.38), 0 0 1.2em rgb(7 17 19 / 0.22);
+}
+.about-panel p { margin: 0 0 1.28em; }
+.about-panel:lang(zh) { line-height: 1.7; }
+.about-panel:lang(zh) p { margin-bottom: 1em; }
+.about-panel p:last-child { margin: 0; }
+.about-name { font-style: italic; }
+.about-panel a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: #ffffff70; text-underline-offset: 0.22em; cursor: pointer; transition: text-decoration-color 0.36s var(--gentle-ease); }
+.about-panel a:hover, .about-panel a:focus-visible { text-decoration-color: #fff; }
+
+.interface.is-about-open .about-panel { opacity: 1; pointer-events: auto; user-select: text; -webkit-user-select: text; }
+
+/* 波形面板（沿用原版）：左边作曲者，中间波形，右边歌名；暂停时整体淡一些 */
+.track-waveform { left: 50%; top: calc(50% - 120px); height: 104px; transform: translate(-50%, -50%); text-shadow: var(--halo); }
+.interface.is-waveform-open .track-waveform { opacity: 1; pointer-events: auto; }
+.track-waveform.is-paused .waveform-canvas, .track-waveform.is-paused .waveform-title, .track-waveform.is-paused .waveform-artist { opacity: 0.5; }
+/* 波形下面的介绍 */
+.waveform-notes { position: absolute; left: 50%; top: calc(100% + 34px); transform: translateX(-50%); width: min(24em, calc(100vw - 32px)); text-align: center; line-height: 1.7; text-wrap: pretty; user-select: text; -webkit-user-select: text; }
+.waveform-notes p { margin: 0 0 1em; }
+.waveform-notes p:last-child { margin: 0; }
+.song-toggle { text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: #ffffff70; text-underline-offset: 0.22em; transition: text-decoration-color 0.36s var(--gentle-ease); }
+.song-toggle:hover, .song-toggle:focus-visible { text-decoration-color: #fff; }
+.waveform-canvas { display: block; height: 104px; filter: drop-shadow(0 0 5px rgb(7 17 19 / 0.28)); }
+.waveform-artist, .waveform-title { position: absolute; top: 50%; transform: translateY(-50%); white-space: nowrap; cursor: pointer; transition: opacity var(--fade) var(--fade-ease); }
+.waveform-artist { right: calc(100% + 24px); }
+.waveform-title { left: calc(100% + 24px); font-style: italic; }
+.waveform-title[data-year]::after { content: " (" attr(data-year) ")"; font-style: normal; }
+.track-waveform.is-metadata-hidden .waveform-artist, .track-waveform.is-metadata-hidden .waveform-title { opacity: 0; }
+.waveform-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 2px; height: 104px; }
+.waveform-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; -webkit-appearance: none; appearance: none; }
+@media (max-width: 700px) { .track-waveform, .waveform-canvas { height: 88px; } }
+.interface:not(.is-resting) .control { opacity: 0; pointer-events: none; }
+
+/* time dial */
+.time-scrubber {
+  --dial-w: 358px;
+  --dial-h: min(378px, calc(100vh - 180px));
+  --active-w: 114px;
+  left: 50%;
+  top: calc(50% - 14px);
+  width: var(--dial-w);
+  height: var(--dial-h);
+  transform: translate(-50%, -50%);
+  text-shadow: var(--halo);
+}
+.interface.is-time-selected .time-scrubber { opacity: 1; }
+.time-ticks { position: absolute; inset: 0; }
+/* 刻度是一列小圆点；每个时节的分界点大一些，时节中间那一点的右侧写着时节名 */
+.time-ticks span {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+.time-ticks span.is-major { width: 5px; height: 5px; box-shadow: 0 0 5px rgb(7 17 19 / 0.3); }
+.time-ticks span[data-label]::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--active-w) / 2 + 14px);
+  transform: translateY(-50%);
+  font-size: 0.78em;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  opacity: calc(var(--lab, 1) * 0.75);
+}
+.time-active-tick { position: absolute; left: 50%; top: 50%; width: var(--active-w); height: 1.5px; background: #fff; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgb(7 17 19 / 0.25); }
+
+.time-slider-value, .time-slider-mode {
+  position: absolute;
+  top: 50%;
+  height: 28px;
+  line-height: 28px;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+.time-slider-value { right: calc(50% + var(--active-w) / 2 + 8px); font-variant-numeric: tabular-nums; letter-spacing: -0.03em; pointer-events: auto; cursor: grab; }
+.time-slider-meridiem { letter-spacing: 0; }
+.time-slider-mode { left: calc(50% + var(--active-w) / 2 + 20px); font-style: italic; pointer-events: auto; transition: opacity var(--fade) var(--fade-ease); }
+.time-slider-mode:disabled { cursor: default; pointer-events: none; }
+.time-scrubber.is-dragging .time-slider-mode { opacity: 0.5; }
+.time-drag { position: absolute; left: 50%; top: 0; width: 144px; height: 100%; transform: translateX(-50%); cursor: grab; pointer-events: auto; touch-action: none; }
+.interface:not(.is-time-selected) .time-scrubber * { pointer-events: none !important; }
+
+
+/* ---------------------------------------------------------------- context menu */
+.context-links {
+  position: fixed;
+  z-index: 20;
+  left: var(--context-x, -200px);
+  top: var(--context-y, -200px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: min(320px, calc(100vw - 36px));
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--fade) var(--gentle-ease);
+}
+.context-links.is-open { opacity: 1; pointer-events: auto; }
+.context-link {
+  display: flex;
+  width: 150px;
+  height: 25px;
+  margin-right: -30px;
+  padding: 0 30px;
+  align-items: center;
+  justify-content: flex-end;
+  color: #ffffff7f;
+  text-decoration: none;
+  white-space: nowrap;
+  text-shadow: var(--halo);
+  transition: color 0.36s var(--gentle-ease);
+}
+#change-scene { width: 190px; margin-bottom: 16px; }
+.context-link::after {
+  content: "";
+  display: block;
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-left: 7px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 0.36s var(--gentle-ease);
+}
+.context-link:hover, .context-link:focus-visible { color: #fff; }
+.context-link:hover::after, .context-link:focus-visible::after { opacity: 1; }
+
+/* ---------------------------------------------------------------- the year */
+.time-numerals { letter-spacing: 0; }
+.time-meridiem:empty { display: none; }
+.time-slider-mode { display: none; }
+.time-slider-value { letter-spacing: 0; }
+.verse {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: min(90vw, 34em);
+  margin: 0;
+  transform: translate(-50%, -50%);
+  font-style: italic;
+  font-size: 1.12em;
+  letter-spacing: 0.012em;
+  text-align: center;
+  text-shadow: var(--halo);
+  opacity: 0;
+  filter: blur(6px);
+  pointer-events: none;
+  transition: opacity 3.2s ease, filter 3.2s ease, letter-spacing 9s ease;
+}
+.verse.is-visible { opacity: 0.9; filter: blur(0); letter-spacing: 0.035em; transition-duration: 2.6s, 2.6s, 12s; }
+.interface:not(.is-resting) .verse { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .verse { filter: none; transition: opacity 0.4s; } }
+
+/* ---------------------------------------------------------------- 天空上的光标：光斑两侧各一个细箭头，提示可以左右拖动换季节 */
+.lake.is-over-backdrop { cursor: none; }
+/* 天空很亮，白光斑用叠加会看不见：天空上改成正常叠加，外面加一圈很淡的暗晕 */
+.lake.is-over-backdrop .cursor-ring { mix-blend-mode: normal; filter: drop-shadow(0 0 3px rgb(7 17 19 / 0.35)) drop-shadow(0 0 10px rgb(7 17 19 / 0.18)); }
+/* 季节刻度盘也不用上下双箭头，换成“抓手”，和抓着滚筒拖的手感一致 */
+.time-scrubber.is-dragging .time-drag, .time-scrubber.is-dragging .time-slider-value { cursor: grabbing; }
