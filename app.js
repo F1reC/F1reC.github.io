@@ -3,7 +3,11 @@ import { YEAR_SECONDS, seasonAt, subseasonAt, SUBSEASONS, LINES, RETURN_LINE } f
 
 // ---------------------------------------------------------------- content
 // 整站只放一首歌，循环播放。音频文件放在 music/ 下，文件名和这里一致
-const TRACK = { title: 'Cloud Atlas End Title', artist: 'Tom Tykwer', year: 2012, src: 'music/cloud-atlas-end-title.m4a' }
+// peaks 是提前算好的 88 根波形柱高度（换歌时要重新算），打开波形面板时直接画，不用先下载、解码整首歌
+const TRACK = {
+  title: 'Cloud Atlas End Title', artist: 'Tom Tykwer', year: 2012, src: 'music/cloud-atlas-end-title.m4a',
+  peaks: [0.064, 0.064, 0.06, 0.06, 0.069, 0.06, 0.06, 0.06, 0.06, 0.06, 0.07, 0.06, 0.06, 0.061, 0.06, 0.06, 0.06, 0.061, 0.083, 0.074, 0.063, 0.065, 0.099, 0.095, 0.121, 0.129, 0.112, 0.109, 0.147, 0.171, 0.151, 0.154, 0.224, 0.235, 0.181, 0.162, 0.177, 0.172, 0.175, 0.18, 0.185, 0.299, 0.254, 0.249, 0.303, 0.284, 0.265, 0.269, 0.229, 0.278, 0.27, 0.366, 0.456, 0.408, 0.404, 0.378, 0.383, 0.348, 0.519, 0.566, 0.557, 0.459, 0.48, 0.525, 0.512, 0.549, 0.503, 0.505, 0.57, 0.682, 0.833, 0.754, 0.926, 0.941, 1, 0.825, 0.868, 0.866, 0.933, 0.978, 1, 1, 0.981, 0.858, 1, 1, 1, 0.077],
+}
 
 const SCENE_KEY = 'seasons.scene-cycle.v1'
 // The horizon view: the seasons show most on the mountains and forest.
@@ -455,34 +459,10 @@ function togglePlay() {
 }
 
 // 波形面板（沿用原版）：左边作曲者，中间波形，右边歌名；点或拖波形可以跳到任意位置
-async function peaksFor(tr) {
-  if (peaksCache.has(tr.src)) return peaksCache.get(tr.src)
-  const p = (async () => {
-    const buf = await A.ctx.decodeAudioData(await (await fetch(tr.src)).arrayBuffer())
-    const data = buf.getChannelData(0)
-    const n = 88
-    const raw = Array.from({ length: n }, (_, i) => {
-      let s = 0
-      const a = Math.floor((i / n) * data.length), b = Math.floor(((i + 1) / n) * data.length)
-      for (let j = a; j < b; j += 16) s += data[j] * data[j]
-      return Math.sqrt(s / ((b - a) / 16))
-    })
-    const sorted = [...raw].sort((x, y) => x - y)
-    const lo = sorted[Math.floor(n * 0.12)], hi = sorted[Math.floor(n * 0.94)]
-    return raw.map((v) => 0.06 + Math.pow(clamp((v - lo) / (hi - lo || 1), 0, 1), 1.28) * 0.94)
-  })()
-  peaksCache.set(tr.src, p)
-  return p
-}
-
-const peaksCache = new Map()
-let peaks = null
+const peaks = TRACK.peaks
 let lastWave = 0
 let seeking = false
-async function drawWaveform(force) {
-  if (!A.ctx) return
-  if (force) peaks = await peaksFor(TRACK).catch(() => null)
-  if (!peaks) return
+function drawWaveform(force) {
   const now = performance.now()
   if (!force && now - lastWave < 50) return
   lastWave = now
@@ -518,7 +498,7 @@ function bindMusic() {
   $('#waveform-title').textContent = TRACK.title
   $('#waveform-title').dataset.year = TRACK.year
   $('#track-title').addEventListener('click', () => setView('waveform'))
-  // 点介绍下面的“暂停 / 播放”、歌名或作曲者都可以暂停 / 继续（空格键、在“Cloud Atlas”上点右键也可以）
+  // 点介绍下面的“暂停 / 播放”、歌名或作曲者都可以暂停 / 继续（空格键也可以）
   for (const id of ['#waveform-title', '#waveform-artist', '#song-toggle']) $(id).addEventListener('click', togglePlay)
   const range = $('#waveform-range')
   const fade = (v, s) => { const m = A.music; if (!m) return; const g = m.vol.gain, t = A.ctx.currentTime; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(v, t + s) }
@@ -724,14 +704,7 @@ function bindPointer() {
   // swallow the synthetic click after a drag
   addEventListener('click', (e) => { if (performance.now() < suppressUntil && e.target.closest('.control')) { e.stopPropagation(); e.preventDefault() } }, true)
 
-  lakeEl.addEventListener('contextmenu', (e) => {
-    e.preventDefault()
-    if (e.target.closest('#track-title')) { closeMenu(); return togglePlay() }
-    if (e.target.closest('.time-button, .site-title')) return closeMenu()
-    if (view !== 'resting') setView('resting')
-    openMenu(e.clientX, e.clientY)
-    ring.classList.remove('is-visible')
-  })
+  // 不再有右键菜单：右键就是浏览器自带的菜单
   document.addEventListener('gesturestart', (e) => e.preventDefault())
 }
 
